@@ -1,4 +1,5 @@
 export const initialState = {
+  operation: [],
   currentValue: "0",
   operator: null,
   previousValue: null,
@@ -6,16 +7,22 @@ export const initialState = {
 
 export const handleNumber = (value, state) => {
   if (state.currentValue === "0") {
-    return { currentValue: `${value}` };
+    return {
+      operation: [...state.operation, value],
+      currentValue: `${value}`,
+    };
   }
 
   return {
+    operation: [...state.operation, value],
     currentValue: `${state.currentValue}${value}`,
   };
 };
 
+export const handleOperator = () => {};
+
 export const handleEqual = (state) => {
-  const { currentValue, previousValue, operator } = state;
+  const { operation, currentValue, operator, previousValue } = state;
 
   const current = parseFloat(currentValue);
   const previous = parseFloat(previousValue);
@@ -23,8 +30,9 @@ export const handleEqual = (state) => {
     operator: null,
     previousValue: null,
   };
+  let solution = 0;
 
-  if (operator === "/") {
+  if (operator === "÷") {
     return {
       currentValue: previous / current,
       ...resetState,
@@ -61,9 +69,10 @@ const calculator = (type, value, state) => {
       return handleNumber(value, state);
     case "operator":
       return {
+        operation: [...state.operation, value],
+        currentValue: "0",
         operator: value,
         previousValue: state.currentValue,
-        currentValue: "0",
       };
     case "equal":
       return handleEqual(state);

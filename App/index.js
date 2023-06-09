@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, StatusBar, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  StatusBar,
+  SafeAreaView,
+} from "react-native";
 
-import Row from "./components/Row";
 import Button from "./components/Button";
+import Row from "./components/Row";
 import calculator, { initialState } from "./util/calculator";
-
-// "react-native": "0.71.8"
 
 const styles = StyleSheet.create({
   container: {
@@ -13,6 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#202020",
     justifyContent: "flex-end",
   },
+  input: {},
   value: {
     color: "#fff",
     fontSize: 40,
@@ -24,15 +30,28 @@ const styles = StyleSheet.create({
 
 const App = () => {
   const [state, setState] = useState(initialState);
+  const [value, setValue] = useState('');
 
   const handleTap = (type, value) => {
-    setState((state) => calculator(type, value, state));
+    setState(() => calculator(type, value, state));
   };
+
+  const handleChange = (value) => {
+    setValue(value);
+    // update `operation` array
+    // compute result
+    handleTap('equal');
+  }
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <SafeAreaView>
+        <TextInput
+          style={styles.input}
+          onChangeText={(v) => handleChange(v)}
+          value={value}
+        />
         <Text style={styles.value}>
           {parseFloat(state.currentValue).toLocaleString()}
         </Text>
@@ -53,9 +72,9 @@ const App = () => {
             onPress={() => handleTap("percentage")}
           />
           <Button
-            text="/"
+            text="÷"
             theme="accent"
-            onPress={() => handleTap("operator", "/")}
+            onPress={() => handleTap("operator", "÷")}
           />
         </Row>
 
